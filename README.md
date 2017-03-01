@@ -1,6 +1,29 @@
 # Microservice for Search Index of Phone Numbers
 
-{TODO. There will be project description}
+This project helps to normalize telephone numbers in the database.
+
+## Installation
+
+Edit dev.env and sqlalchemy.url in alembic.ini with your db connection details.
+```
+$ pip install -r requirements.txt
+$ . dev.env
+```
+
+## Usage
+
+##### Add column in db for normalized phone numbers
+```
+$ alembic upgrade head
+```
+##### Normalize phone numbers
+```
+$ python format_phones_in_db()
+```
+
+## Requirements
+
+- Python >= 3.5
 
 # Project Goals
 
