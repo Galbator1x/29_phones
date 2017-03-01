@@ -6,10 +6,10 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import Session
 
-Base = automap_base()
+base = automap_base()
 engine = create_engine(getenv('DB_URI'))
-Base.prepare(engine, reflect=True)
-Orders = Base.classes.orders
+base.prepare(engine, reflect=True)
+orders = base.classes.orders
 session = Session(engine)
 
 
@@ -20,7 +20,7 @@ def format_phone_number(number, region='RU'):
 
 
 def format_phones_in_db(flag=False):
-    orders = session.query(Orders).all()
+    orders = session.query(orders).all()
     for order in orders:
         phone = format_phone_number(order.contact_phone)
         order.contact_phone_formatted = phone
