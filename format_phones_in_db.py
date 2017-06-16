@@ -1,10 +1,13 @@
 import re
 from os import getenv
+from time import sleep
 
 import sqlalchemy
 from sqlalchemy import create_engine
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import Session
+
+from config import SLEEP_SEC
 
 Base = automap_base()
 engine = create_engine(getenv('DB_URI'))
@@ -20,8 +23,7 @@ def format_phone_number(number):
 
 
 def format_phones_in_db():
-    orders = session.query(Orders).all()
-    for order in orders:
+    for order in session.query(Orders).yield_per(100):
         phone = format_phone_number(order.contact_phone)
         order.contact_phone_formatted = phone
     session.commit()
@@ -39,4 +41,6 @@ def run_db_query(func, attempts=2):
 
 
 if __name__ == '__main__':
-    run_db_query(format_phones_in_db)
+    while True:
+        run_db_query(format_phones_in_db)
+        sleep(int(SLEEP_SEC))
