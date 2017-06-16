@@ -13,13 +13,13 @@ Orders = Base.classes.orders
 session = Session(engine)
 
 
-def format_phone_number(number, region='RU'):
+def format_phone_number(number):
     # returns a number in the format: 9291112233
     _number = ''.join(re.findall(r'\d+', number))
     return _number[1:] if len(_number) == 11 else _number
 
 
-def format_phones_in_db(flag=False):
+def format_phones_in_db():
     orders = session.query(Orders).all()
     for order in orders:
         phone = format_phone_number(order.contact_phone)
@@ -28,8 +28,7 @@ def format_phones_in_db(flag=False):
 
 
 def run_db_query(func, attempts=2):
-    while attempts > 0:
-        attempts -= 1
+    for _ in range(attempts):
         try:
             return func()
         except sqlalchemy.exc.DBAPIError as exc:
