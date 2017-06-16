@@ -18,7 +18,7 @@ $ alembic upgrade head
 ```
 ##### Normalize phone numbers
 ```
-$ python format_phones_in_db()
+$ python format_phones_in_db.py
 ```
 
 ## Requirements
