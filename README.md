@@ -1,6 +1,7 @@
 # Microservice for Search Index of Phone Numbers
 
 This project helps to normalize telephone numbers in the database.
+The script once normalizes all the numbers and normalizes new numbers every time interval.
 
 ## Installation
 
