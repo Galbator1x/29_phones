@@ -9,10 +9,10 @@ from sqlalchemy.orm import Session
 
 from config import DB_CHECK_INTERVAL
 
-base = automap_base()
+Base = automap_base()
 engine = create_engine(getenv('DB_URI'))
-base.prepare(engine, reflect=True)
-orders = base.classes.orders
+Base.prepare(engine, reflect=True)
+Orders = Base.classes.orders
 session = Session(engine)
 
 
@@ -41,8 +41,8 @@ def run_db_query(func, *args, attempts=2):
 
 
 if __name__ == '__main__':
-    run_db_query(format_phones_in_db, session.query(orders))
+    run_db_query(format_phones_in_db, session.query(Orders))
     while True:
         sleep(int(DB_CHECK_INTERVAL))
-        query = session.query(orders).filter(orders.contact_phone_formatted == None)
+        query = session.query(Orders).filter(Orders.contact_phone_formatted == None)
         run_db_query(format_phones_in_db, query)
