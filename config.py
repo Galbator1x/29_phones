@@ -1,3 +1,3 @@
 import os
 
-SLEEP_SEC = os.getenv('SLEEP_SEC', 60)
+DB_CHECK_INTERVAL = os.getenv('DB_CHECK_INTERVAL', 60)

@@ -7,7 +7,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import Session
 
-from config import SLEEP_SEC
+from config import DB_CHECK_INTERVAL
 
 Base = automap_base()
 engine = create_engine(getenv('DB_URI'))
@@ -22,17 +22,17 @@ def format_phone_number(number):
     return _number[1:] if len(_number) == 11 else _number
 
 
-def format_phones_in_db():
-    for order in session.query(Orders).yield_per(100):
+def format_phones_in_db(query):
+    for order in query.yield_per(100):
         phone = format_phone_number(order.contact_phone)
         order.contact_phone_formatted = phone
     session.commit()
 
 
-def run_db_query(func, attempts=2):
+def run_db_query(func, *args, attempts=2):
     for _ in range(attempts):
         try:
-            return func()
+            return func(*args)
         except sqlalchemy.exc.DBAPIError as exc:
             if attempts and exc.connection_invalidated:
                 session.rollback()
@@ -41,6 +41,8 @@ def run_db_query(func, attempts=2):
 
 
 if __name__ == '__main__':
+    run_db_query(format_phones_in_db, session.query(Orders))
     while True:
-        run_db_query(format_phones_in_db)
-        sleep(int(SLEEP_SEC))
+        sleep(int(DB_CHECK_INTERVAL))
+        query = session.query(Orders).filter(Orders.contact_phone_formatted == None)
+        run_db_query(format_phones_in_db, query)
